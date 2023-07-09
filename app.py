@@ -12,6 +12,10 @@ import plotly.graph_objects as go
 import plotly.figure_factory as ff
 from IPython.display import HTML
 
+#setting the title and text
+st.title("👨🏻‍🏭Unemployment Analysis.")
+st.write("*Made with ❤️‍🔥 by Shrudex👨🏻‍💻*")
+
 #reading the dataset and storing it as a dataframe
 df = pd.read_csv('data.csv')
 
@@ -40,17 +44,21 @@ df['Region'] = df['Region'].astype('category')
 #we have extracted the monthNumbers and monthNames individually
 df.drop(columns='Month', inplace=True)
 df.head(3)
+st.title(" ")
 
 #5-number summary
+st.subheader("5-NUMBER SUMMARY")
 st.write(df.describe())
 
 #5-number summary of the numerical variables which give some information
+st.subheader("5-NUMBER SUMMARY OF INFORMATORY VARIABLES")
 st.write(round(df[['Estimated Unemployment Rate', 'Estimated Employed', 'Estimated Labour Participation Rate']].describe().T, 2))
 
 #grouping by 'Region' and finding mean values for the numerical columns
 regionStats = df.groupby(['Region'])[['Estimated Unemployment Rate', 'Estimated Employed', 'Estimated Labour Participation Rate']].mean().reset_index()
 
 #rounding the values to 2 decimal points
+st.subheader("STATISTICS GROUPED BY REGION")
 st.write(round(regionStats, 2))
 
 #constructing a 'heatMap' to find the 'pair-wise correlation' values
@@ -65,9 +73,11 @@ heatMap = heatMap.corr()
 plt.figure(figsize=(23,8))
 sns.heatmap(heatMap, annot=True, cmap='twilight_shifted', fmt='.3f', linewidths=1)
 plt.title('heatMap')
+st.subheader("HEATMAP")
 st.pyplot()
 
 ## EDA - Exploratory Data Analysis
+st.header("EXPLORATORY DATA ANALYSIS")
 
 #plotting a box-plot to show unemployment rate in each state
 fig = px.box(
@@ -78,12 +88,14 @@ fig = px.box(
     title='unemploymentRate',
     template='plotly'
 )
+st.subheader("BOX-PLOT [UNEMPLOYMENT RATE IN EACH STATE]")
 st.plotly_chart(fig)
 
 #creating a scatter matrix plot to denote relationship
 fig = px.scatter_matrix(df,
     dimensions=['Estimated Unemployment Rate','Estimated Employed', 'Estimated Labour Participation Rate'],
     color='Region')
+st.subheader("SCATTER MATRIX PLOT")
 st.plotly_chart(fig)
 
 #plotting a "Bar-plot" to find the "average unemployment rate in each state"
@@ -100,6 +112,7 @@ fig = px.bar(newDF,
              y='Estimated Unemployment Rate',
              color='States',
              title='State-wise Average Employment Rate')
+st.subheader("BAR-PLOT")
 st.plotly_chart(fig)
 
 #plotting a "Bar-plot" to find the "unemployment rate" for each "Region" month-wise
@@ -112,7 +125,7 @@ fig = px.bar(df,
              height=800)
 
 fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
-
+st.subheader("BAR-PLOT [MONTH-WISE]")
 st.plotly_chart(fig)
 
 #creating a new dataframe with 'State-wise' & 'Region-wise' Estimated Unemployment Rate
@@ -121,6 +134,8 @@ unempDF = df[['States','Region','Estimated Unemployment Rate','Estimated Employe
 unempDF = unempDF.groupby(['Region','States'])['Estimated Unemployment Rate'].mean().reset_index()
 
 #printing the new dataframe
+st.subheader("DATAFRAME - STATEWISE & REGIONWISE")
+
 st.write(unempDF.head(4))
 
 #a sunburst chart (hierarchical chart) for unemployment rate region-wise and state-wise
@@ -129,9 +144,12 @@ fig = px.sunburst(unempDF,
                   values='Estimated Unemployment Rate',
                   title='unemployment rate in each region and state',
                   height=650)
+
+st.subheader("SUNBURST CHART")
 st.plotly_chart(fig)
 
 ## Impact of Lockdown on States Estimated Employed
+st.header("IMPACT OF LOCKDOWN")
 
 #creating a scatter geospatial plot
 fig = px.scatter_geo(df,'longitude', 'latitude', 
@@ -150,6 +168,7 @@ fig.update_geos(lataxis_range=[5,35],
                 oceancolor="#6dd5ed",
                 showocean=True)
 
+st.subheader("SCATTER GEOSPATIAL PLOT")
 st.plotly_chart(fig)
 
 #filtering dataset between month 4 and 7 (inclusive) - after lockdown
@@ -171,6 +190,7 @@ df47g['Unemployment Rate before lockdown'] = df14g['Estimated Unemployment Rate'
 df47g.columns = ['States','unemploymentRate A/ lockdown','unemploymentRate B/ lockdown']
 
 #displaying the top results
+st.subheader("DATAFRAME BEFORE & AFTER LOCKDOWN")
 st.write(df47g.head())
 
 #computing the % change in unemployment rate
@@ -183,6 +203,8 @@ df47g = df47g.sort_values('% change in unemployment')
 fig = px.bar(df47g, x='States',y='% change in unemployment',
              color='% change in unemployment',
              title='% change in Unemployment A/ Lockdown')
+
+st.subheader("BAR-CHART [%CHANGE IN UNEMPLOYMENT]")
 
 st.plotly_chart(fig)
 
@@ -212,5 +234,7 @@ fig = px.bar(df47g,
              x='% change in unemployment',
              color='impactStatus',
              title='Lockdown Impact on Employment in India')
+
+st.subheader("BAR-GRAPH [CLASSIFYING THE IMPACT FOR DIFFERENT STATES]")
 
 st.plotly_chart(fig)
