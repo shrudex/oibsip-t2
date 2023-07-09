@@ -2,7 +2,6 @@ numpy==1.21.0
 pandas==1.3.0
 matplotlib==3.4.2
 seaborn==0.11.1
-calendar==0.4.5
 plotly==5.1.0
 ipython==7.25.0
 streamlit==0.84.2
